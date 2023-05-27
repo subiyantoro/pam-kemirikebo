@@ -1,0 +1,1 @@
+export type OnChangeValue = (type: string, val?: Object | null) => void;
