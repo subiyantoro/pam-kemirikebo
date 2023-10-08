@@ -14,11 +14,13 @@ const CustomerInput = ({
     width,
     required,
     onChangeHandle,
+    value
 }: PageProps<{
     options: Customer[],
     width: string,
     required: boolean
     onChangeHandle: onFormHandle,
+    value?: any
 }>) => {
     const [open, setOpen] = useState(false);
     const loading = open && options.length === 0;
@@ -57,6 +59,11 @@ const CustomerInput = ({
                     {option.name}
                 </Box>
             )}
+            value={value}
+            defaultValue={{
+                id: '',
+                name: 'Pilih Customer'
+            }}
         />
     )
 }

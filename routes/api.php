@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
- * Controller 
+ * Controller
  */
 
 use App\Http\Controllers\CustomerController;
@@ -39,4 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/customer/view/{id}', [CustomerController::class, 'getSingleCustomer'])->name('customer_view');
     Route::post('/report/add', [ReportController::class, 'addReport'])->name('report_add');
     Route::get('/reports', [ReportController::class, 'showReport'])->name('report_data');
+    Route::get('/report/check', [ReportController::class, 'checkDataReport'])->name('check_report');
+    Route::post('/report/edit', [ReportController::class, 'editReport'])->name('edit_report');
+    Route::get('/report/{id}', [ReportController::class, 'deleteReport'])->name('delete_report');
 });

@@ -75,6 +75,7 @@ class ReportController extends Controller
                 'table_customer.customer_id as customer_id',
                 'table_reports.meter as meter_now',
                 'table_reports.total as total',
+                'table_reports.report_date as report_date'
             )
             ->offset(($table_page === 0 ? 0 : $table_row * $table_page))
             ->limit($table_row)
@@ -83,7 +84,7 @@ class ReportController extends Controller
         $reportData = [];
         foreach ($query as $key => $data) {
             $meterBefore = $this->getDataBefore($data->customer_id, $monthBefore);
-            $result = (object) [
+            $result = (object)[
                 'id' => $key + 1,
                 'no' => $data->id,
                 'name' => $data->name,
@@ -93,12 +94,70 @@ class ReportController extends Controller
                 'total' => $data->total,
                 'cubic_price' => $getSettingData->cubic_price,
                 'admin_price' => $getSettingData->admin_price,
+                'report_date' => $data->report_date,
             ];
 
             array_push($reportData, $result);
         };
         $total_data = DB::table('table_reports')->count();
 
-        return Response::json(['data' => $reportData, 'meta' => (object) ['total' => $total_data]]);
+        return Response::json(['data' => $reportData, 'meta' => (object)['total' => $total_data]]);
+    }
+
+    public function checkDataReport(Request $request)
+    {
+        $cusId = $request->query('cus_id');
+        $targetMonth = $request->query('date');
+        $query = DB::table('table_reports')
+            ->where('customer_id', $cusId)
+            ->where('report_date', $targetMonth)
+            ->first();
+
+        return Response::json($query);
+    }
+
+    public function editReport(Request $request)
+    {
+        $idReport = $request->input('id');
+        $cubic = $request->input('cubic');
+        $targetMonth = $request->input('date');
+        $cusId = $request->input('cus_id');
+        $idToDelete = $request->input('id_delete');
+        try {
+            if ($idToDelete !== null) {
+                DB::table('table_reports')
+                    ->where('id', $idToDelete)
+                    ->delete();
+            }
+            $monthBefore = date_create($targetMonth)->modify('-1 months')->format('Y-m-');
+            $getSettingData = DB::table('table_settings')->where('id', 1)->first();
+            $dataBefore = DB::table('table_reports')->where([
+                ['customer_id', '=', $cusId],
+                ['report_date', 'like', $monthBefore . '%']
+            ])->get();
+            $totalMeter = 0;
+            if (count($dataBefore) !== 0) {
+                $totalMeter = $cubic - $dataBefore[0]->meter;
+            }
+            $totalPrice = ($totalMeter * $getSettingData->cubic_price) + $getSettingData->admin_price;
+            DB::table('table_reports')
+                ->where('id', $idReport)
+                ->update(['meter' => $cubic, 'report_date' => $targetMonth, 'total' => $totalPrice]);
+
+            return Response::json(true);
+        } catch (e) {
+            return Response::json(false);
+        }
+    }
+
+    public function deleteReport($id)
+    {
+        try {
+            DB::table('table_reports')->where('id', $id)->delete();
+
+            return Response::json(true);
+        } catch (e) {
+            return Response::json(false);
+        }
     }
 }

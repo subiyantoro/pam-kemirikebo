@@ -5,7 +5,7 @@ import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
 import { Box, IconButton } from "@mui/material";
-import { Print as PrintIcon } from '@mui/icons-material'
+import { Print as PrintIcon, Create, Delete } from '@mui/icons-material'
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { reformatDate } from "../utils";
@@ -14,6 +14,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
 import ModalToPrint from "./ModalToPrint";
+import ModalToEdit from "@/Pages/Report/ModalToEdit";
+import ModalToDelete from "@/Pages/Report/ModalToDelete";
 
 const Report = ({ auth }: PageProps) => {
     const [month, setMonth] = useState(dayjs());
@@ -28,6 +30,8 @@ const Report = ({ auth }: PageProps) => {
     const [totalData, setTotalData] = useState(0);
     const [reports, setReports] = useState([]);
     const printRef = useRef();
+    const editRef = useRef();
+    const deleteRef = useRef();
     const columns = useMemo<MRT_ColumnDef<Data>[]>(() => [
         {
             accessorKey: 'id',
@@ -53,8 +57,9 @@ const Report = ({ auth }: PageProps) => {
             accessorKey: 'total',
             header: 'Total Harga',
             Cell: ({ row }) => Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(row.original.total)
-        }
+        },
     ], [month]);
+    const [selectedData, setSelectedData] = useState(null)
 
     const handleResize = () => {
         setDimensions({
@@ -75,7 +80,38 @@ const Report = ({ auth }: PageProps) => {
             .catch(e => toast.error('Terjadi Kesalahan'))
     }
 
-    // console.log(month.subtract(1, 'month').format("YYYY-MM"))
+    const editContent = (isExist?: boolean, idToDelete?: any) => {
+        const urlReq = `${route('edit_report')}`
+        axios.post(urlReq, {
+            id: selectedData?.no,
+            cubic: selectedData?.meter_now,
+            date: selectedData?.report_date,
+            cus_id: selectedData?.customer_id, 
+            ...isExist && { id_delete: idToDelete },
+        }).then(res => {
+            editRef.current?.closeWarning();
+            editRef.current?.close();
+            fetchingReportData();
+            toast.success('Report terupdate');
+        }).catch(e => toast.error('Terjadi keselahan'))
+    }
+
+    const submitEdit = () => {
+        const urlReq = `${route('check_report')}?cus_id=${selectedData?.customer_id}&date=${selectedData?.report_date}`
+        axios.get(urlReq)
+            .then(res => {
+                if (Object.keys(res.data).length !== 0) {
+                    editRef.current?.openWarning()
+                    setSelectedData(prev => ({
+                        ...prev,
+                        idToDelete: res.data.id,
+                    }))
+                } else {
+                    editContent(false);
+                    editRef.current?.close()
+                }
+            }).catch(e => toast.error('Terjadi Kesalahan'))
+    }
 
     useEffect(() => {
         window.addEventListener('resize', handleResize, false);
@@ -119,6 +155,24 @@ const Report = ({ auth }: PageProps) => {
                                     >
                                         <PrintIcon />
                                     </IconButton>
+                                    <IconButton
+                                        color="primary"
+                                        onClick={() => {
+                                            setSelectedData(reports.find(x => x.id === row.original.id));
+                                            editRef.current?.open()
+                                        }}
+                                    >
+                                        <Create />
+                                    </IconButton>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() => {
+                                        setSelectedData(reports.find(x => x.no === row.original.no));
+                                            deleteRef.current?.open()
+                                        }}
+                                    >
+                                        <Delete />
+                                    </IconButton>
                                 </Box>
                             )}
                         />
@@ -126,6 +180,17 @@ const Report = ({ auth }: PageProps) => {
                 </div>
             </div>
             <ModalToPrint ref={printRef} />
+            <ModalToEdit
+                ref={editRef}
+                data={selectedData !== null && reports.find(x => x.id === selectedData.id)}
+                onSubmit={submitEdit}
+                onValueChange={(type, val) => setSelectedData(prev => ({
+                    ...prev,
+                    [type]: val
+                }))}
+                onSubmitEdit={isExist => editContent(isExist, selectedData?.idToDelete)}
+            />
+            <ModalToDelete id={selectedData?.no} ref={deleteRef} refetchTable={fetchingReportData} />
         </Authenticated>
     )
 }

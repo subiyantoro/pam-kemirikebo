@@ -20,7 +20,7 @@ export default function Dashboard({ auth }: PageProps) {
         height: window.innerHeight,
     });
     const { data, setData, reset, processing } = useForm({
-        customer_id: null,
+        customer_id: '',
         month: dayjs().format('YYYY-MM-DD'),
         cubic: 0,
     })
@@ -48,13 +48,17 @@ export default function Dashboard({ auth }: PageProps) {
         e.preventDefault();
         const urlRequest = route('report_add');
 
-        if (data.customer_id === null) {
+        if (data.customer_id === '') {
             toast.error('Mohon Pilih pelanggan dahulu');
         } else {
             axios.post(urlRequest, data)
                 .then(res => {
                     toast.success(res.data);
-                    reset();
+                    setData({
+                        customer_id: '',
+                        cubic: 0,
+                        month: dayjs().format('YYYY-MM-DD'),
+                    })
                 })
                 .catch(e => toast.error('Terjadi Kesalahan'))
         }
@@ -95,9 +99,16 @@ export default function Dashboard({ auth }: PageProps) {
                                 <InputLabel htmlFor="customer" value="Pelanggan" className='mt-2 mb-2' />
                                 <CustomerInput
                                     auth={auth}
-                                    options={customerList}
+                                    options={[
+                                        {
+                                            id: '',
+                                            name: 'Pilih Customer'
+                                        },
+                                        ...customerList,
+                                    ]}
                                     width={dimensions.width >= 768 ? '50%' : '100%'} required
                                     onChangeHandle={(type, val) => handleFormChange(type, val.id)}
+                                    value={data.customer_id !== '' ? customerList.find(x => x.id === data.customer_id) : { id: '', name: 'Pilih Customer'}}
                                 />
                             </div>
                             <div>
