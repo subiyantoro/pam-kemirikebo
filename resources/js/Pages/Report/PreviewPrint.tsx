@@ -1,7 +1,7 @@
 import {Box, Divider, Grid, Stack, Typography} from "@mui/material";
 import dayjs from "dayjs";
 import { forwardRef } from "react";
-import Logo from '../../../assets/faucet.png';
+import Logo from '../../../assets/logo.png';
 
 const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
     const today = dayjs().format("YYYYMM");
@@ -10,7 +10,7 @@ const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
         <div ref={ref} className="mx-5" style={{ pageBreakInside: 'avoid'}}>
             <Stack spacing={2} direction={"row"} justifyContent={'start'} alignItems={'center'}>
                 <Box>
-                    <img src={Logo} alt={'logo'} width={40} height={40} />
+                    <img src={Logo} alt={'logo'} width={100} height={100} />
                 </Box>
                 <Box>
                     <Typography variant="overline" display="block" gutterBottom>
