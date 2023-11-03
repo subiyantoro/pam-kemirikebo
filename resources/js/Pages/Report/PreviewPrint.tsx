@@ -53,7 +53,7 @@ const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
             <Typography variant="overline" display="block">
                 <div className="flex space-x-30">
                     <div>Total</div>
-                    <div>: {Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(data.total)}</div>
+                    <div>: {Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(((data.meter_now - data.meter_before) * data.cubic_price) + data.admin_price)}</div>
                 </div>
             </Typography>
         </div>

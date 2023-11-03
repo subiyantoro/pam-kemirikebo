@@ -56,7 +56,10 @@ const Report = ({ auth }: PageProps) => {
         {
             accessorKey: 'total',
             header: 'Total Harga',
-            Cell: ({ row }) => Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(row.original.total)
+            Cell: ({ row }) => {
+                const total = ((row.original.meter_now - row.original.meter_before) * row.original.cubic_price) + row.original.admin_price;
+                return Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(total)
+            }
         },
     ], [month]);
     const [selectedData, setSelectedData] = useState(null)
