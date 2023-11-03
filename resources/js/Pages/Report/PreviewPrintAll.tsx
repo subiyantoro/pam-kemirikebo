@@ -38,7 +38,7 @@ const PreviewPrintAll = (props: any) => {
     }
     return (
         <Container style={{ paddingTop: 20}}>
-            <Grid container rowSpacing={10} columnSpacing={1}>
+            <Grid container rowSpacing={1} columnSpacing={1}>
                 {data.map((item, index) => (
                     <Grid item xs={6}>
                         <Box style={{ borderWidth: 1}}>
