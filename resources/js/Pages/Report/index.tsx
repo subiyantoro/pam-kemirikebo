@@ -137,7 +137,7 @@ const Report = ({ auth }: PageProps) => {
                                     onChange={val => setMonth(dayjs(val?.toString()))}
                                     defaultValue={dayjs()}
                                 />
-                                <Button variant={'contained'} color='primary' disabled={reports.length === 0} onClick={() => window.open(`/print?month=${dayjs(month).format('YYYY-MM')}`, '_blank')}>
+                                <Button variant={'contained'} color='primary' disabled={reports.length === 0} onClick={() => window.open(`/print?month=${dayjs(month).format('YYYY-MM')}&month_before=${dayjs(month).subtract(1, 'month').format('YYYY-MM')}`, '_blank')}>
                                     {`Print Report Bulan ${dayjs(month).format('MMMM')}`}
                                 </Button>
                             </header>
