@@ -84,7 +84,7 @@ const Customer = ({ auth }: PageProps) => {
                     </section>
                 </div>
             </div>
-            <ModalAddCustomer showModal={showModalAdd} onCloseHandle={() => setShowModalAdd(!showModalAdd)} />
+            <ModalAddCustomer showModal={showModalAdd} onCloseHandle={() => setShowModalAdd(!showModalAdd)} refetchTable={fetchingCustomers} />
             <ModalDisableCustomer ref={modalDisableRef} dataCustomer={customerData} onFetch={fetchingCustomers} />
         </Authenticated>
     );

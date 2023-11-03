@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
-import { Box, IconButton } from "@mui/material";
+import {Box, Button, IconButton} from "@mui/material";
 import { Print as PrintIcon, Create, Delete } from '@mui/icons-material'
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -86,7 +86,7 @@ const Report = ({ auth }: PageProps) => {
             id: selectedData?.no,
             cubic: selectedData?.meter_now,
             date: selectedData?.report_date,
-            cus_id: selectedData?.customer_id, 
+            cus_id: selectedData?.customer_id,
             ...isExist && { id_delete: idToDelete },
         }).then(res => {
             editRef.current?.closeWarning();
@@ -130,13 +130,16 @@ const Report = ({ auth }: PageProps) => {
                 <div className="max-w-10xl mx-auto sm:px-6 lg:px-8">
                     <section>
                         <div className="p-4 sm:p-8 bg-white shadow">
-                            <header>
+                            <header className='flex justify-between'>
                                 <DatePicker
                                     views={['month', 'year']}
                                     sx={{ width: dimensions.width < 768 ? '100%' : 300 }}
                                     onChange={val => setMonth(dayjs(val?.toString()))}
                                     defaultValue={dayjs()}
                                 />
+                                <Button variant={'contained'} color='primary' disabled={reports.length === 0} onClick={() => window.open('/print', '_blank')}>
+                                    {`Print Report Bulan ${dayjs(month).format('MMMM')}`}
+                                </Button>
                             </header>
                         </div>
                         <Table
@@ -148,7 +151,7 @@ const Report = ({ auth }: PageProps) => {
                             totalData={totalData}
                             manualPagination
                             rowActionComponent={({ row }) => (
-                                <Box>
+                                <Box width={'200px'}>
                                     <IconButton
                                         color="primary"
                                         onClick={() => printRef.current?.handleModal(row.original)}

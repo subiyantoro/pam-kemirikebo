@@ -11,7 +11,13 @@ import { OnChangeValue } from "./type";
 import { useForm } from "@inertiajs/react";
 import { toast } from "react-toastify";
 
-const ModalAddCustomer = ({ showModal, onCloseHandle }) => {
+interface IModalAddCustomer {
+    showModal: boolean;
+    onCloseHandle: () => void;
+    refetchTable: () => void;
+}
+
+const ModalAddCustomer = ({ showModal, onCloseHandle, refetchTable }: IModalAddCustomer) => {
     const { data, setData, processing, post, reset } = useForm({
         name: '',
         phone: '',
@@ -22,7 +28,7 @@ const ModalAddCustomer = ({ showModal, onCloseHandle }) => {
     });
     const RT_RW: number[] = Array.from({ length: 20 }, (_, i) => i + 1);
 
-    const formHandler: OnChangeValue = (type: String, val: any) => {
+    const formHandler: OnChangeValue = (type: string, val: any) => {
         setData(old => ({
             ...old,
             ...{ [type]: val },
@@ -32,7 +38,10 @@ const ModalAddCustomer = ({ showModal, onCloseHandle }) => {
         e.preventDefault();
 
         post(route('customer_save'), {
-            onSuccess: () => toast.success('Berhasil Menambahkan Pelanggan baru'),
+            onSuccess: () => {
+                toast.success('Berhasil Menambahkan Pelanggan baru')
+                refetchTable();
+            },
             onError: () => toast.error('Terjadi Kesalahan'),
             onFinish: () => {
                 onCloseHandle();

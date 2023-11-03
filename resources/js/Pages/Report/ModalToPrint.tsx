@@ -7,7 +7,7 @@ import { useReactToPrint } from "react-to-print";
 
 const ModalToPrint = forwardRef((props, ref) => {
     const [showModal, setShowModal] = useState(false);
-    const [data, setData] = useState<any>({});
+    const [data, setData] = useState<any>([]);
     const previewPrintRef = useRef();
 
     const handleToPrint = useReactToPrint({
@@ -17,14 +17,14 @@ const ModalToPrint = forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         handleModal(customer: any) {
             setShowModal(!showModal);
-            setData(customer)
+            setData([customer])
         }
     }))
 
     return (
-        <Modal show={showModal} onClose={() => setShowModal(false)} disableCloseOutside={false}>
+        <Modal show={showModal} onClose={() => setShowModal(false)} disableCloseOutside={false} maxWidth={'2xl'}>
             <div className="my-10 mx-5">
-                <PreviewPrint data={data} ref={previewPrintRef} />
+                {props.isAll ? <PreviewPrintAll /> : <PreviewPrint data={data[0]} ref={previewPrintRef} />}
             </div>
             <div className="m-5">
                 <Button variant="contained" disableElevation fullWidth startIcon={<PrintIcon />} onClick={handleToPrint}>

@@ -42,4 +42,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/report/check', [ReportController::class, 'checkDataReport'])->name('check_report');
     Route::post('/report/edit', [ReportController::class, 'editReport'])->name('edit_report');
     Route::get('/report/{id}', [ReportController::class, 'deleteReport'])->name('delete_report');
+    Route::get('/report/print/all', [ReportController::class, 'printAll'])->name('print_report_all');
 });

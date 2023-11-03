@@ -24,15 +24,19 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/settings', function() {
+Route::get('/settings', function () {
     return Inertia::render('Setting');
 })->middleware('auth')->name('settings');
 
-Route::get('/report', function() {
+Route::get('/report', function () {
     return Inertia::render('Report/index');
 })->middleware('auth')->name('report');
 
-Route::get('/customer', function() {
+Route::get('/print', function () {
+    return Inertia::render('Report/PreviewPrintAll');
+})->middleware('auth')->name('print_all');
+
+Route::get('/customer', function () {
     return Inertia::render('Customer/index');
 })->middleware('auth')->name('customer');
 
@@ -42,4 +46,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

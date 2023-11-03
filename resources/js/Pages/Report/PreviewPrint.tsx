@@ -1,18 +1,26 @@
-import { Divider, Typography } from "@mui/material";
+import {Box, Divider, Grid, Stack, Typography} from "@mui/material";
 import dayjs from "dayjs";
 import { forwardRef } from "react";
+import Logo from '../../../assets/faucet.png';
 
 const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
     const today = dayjs().format("YYYYMM");
 
     return (
         <div ref={ref} className="mx-5">
-            <Typography variant="overline" display="block" gutterBottom className="text-center">
-                PAM Desa Kemirikebo
-            </Typography>
-            <Typography variant="overline" display="block" gutterBottom className="text-center">
-                {`No. Nota : ${today}/${data.no < 10 ? '0' + data.no : data.no}`}
-            </Typography>
+            <Stack spacing={2} direction={"row"} justifyContent={'start'} alignItems={'center'}>
+                <Box>
+                    <img src={Logo} alt={'logo'} width={40} height={40} />
+                </Box>
+                <Box>
+                    <Typography variant="overline" display="block" gutterBottom className="text-center">
+                        PAM Desa Kemirikebo
+                    </Typography>
+                    <Typography variant="overline" display="block" gutterBottom className="text-center">
+                        {`No. Nota : ${today}/${data.no < 10 ? '0' + data.no : data.no}`}
+                    </Typography>
+                </Box>
+            </Stack>
             <Divider />
             <Typography variant="overline" display="block">
                 <div className="flex space-x-10">

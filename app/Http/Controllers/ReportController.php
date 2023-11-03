@@ -160,4 +160,46 @@ class ReportController extends Controller
             return Response::json(false);
         }
     }
+
+    public function printAll(Request $request) {
+        $monthFilter = $request->query('month');
+        $monthBefore = $request->query('month_before');
+        try {
+            $getSettingData = DB::table('table_settings')->where('id', 1)->first();
+            $query = DB::table('table_reports')
+                ->leftJoin('table_customer', 'table_reports.customer_id', '=', 'table_customer.customer_id')
+                ->where('table_reports.report_date', 'like', $monthFilter . '%')
+                ->select(
+                    'table_reports.id as id',
+                    'table_customer.name as name',
+                    'table_customer.customer_id as customer_id',
+                    'table_reports.meter as meter_now',
+                    'table_reports.total as total',
+                    'table_reports.report_date as report_date'
+                )->get();
+
+            $reportData = [];
+            foreach ($query as $key => $data) {
+                $meterBefore = $this->getDataBefore($data->customer_id, $monthBefore);
+                $result = (object)[
+                    'id' => $key + 1,
+                    'no' => $data->id,
+                    'name' => $data->name,
+                    'customer_id' => $data->customer_id,
+                    'meter_before' => $meterBefore === null ? 0 : $meterBefore->meter,
+                    'meter_now' => $data->meter_now,
+                    'total' => $data->total,
+                    'cubic_price' => $getSettingData->cubic_price,
+                    'admin_price' => $getSettingData->admin_price,
+                    'report_date' => $data->report_date,
+                ];
+
+                array_push($reportData, $result);
+            };
+
+            return Response::json($reportData);
+        } catch (e) {
+            return Response::json(false);
+        }
+    }
 }
