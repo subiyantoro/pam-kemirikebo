@@ -7,7 +7,7 @@ const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
     const today = dayjs().format("YYYYMM");
 
     return (
-        <div ref={ref} className="mx-5">
+        <div ref={ref} className="mx-5" style={{ pageBreakInside: 'avoid'}}>
             <Stack spacing={2} direction={"row"} justifyContent={'start'} alignItems={'center'}>
                 <Box>
                     <img src={Logo} alt={'logo'} width={40} height={40} />
