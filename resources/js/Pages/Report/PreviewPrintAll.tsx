@@ -38,13 +38,15 @@ const PreviewPrintAll = (props: any) => {
     }
     return (
         <Container style={{ paddingTop: 20}}>
-            <Stack spacing={5} direction={"row"} useFlexGap flexWrap="wrap">
+            <Grid container rowSpacing={10} columnSpacing={1}>
                 {data.map((item, index) => (
-                    <Box style={{ borderWidth: 1}}>
-                        <PreviewPrint data={item} />
-                    </Box>
+                    <Grid item xs={6}>
+                        <Box style={{ borderWidth: 1}}>
+                            <PreviewPrint data={item} />
+                        </Box>
+                    </Grid>
                 ))}
-            </Stack>
+            </Grid>
         </Container>
     )
 }
