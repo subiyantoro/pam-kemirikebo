@@ -13,10 +13,13 @@ const PreviewPrint = forwardRef<HTMLDivElement>(({ data }: any, ref) => {
                     <img src={Logo} alt={'logo'} width={40} height={40} />
                 </Box>
                 <Box>
-                    <Typography variant="overline" display="block" gutterBottom className="text-center">
-                        PAM Desa Kemirikebo
+                    <Typography variant="overline" display="block" gutterBottom>
+                        PAMSIMAS Kemirikebo
                     </Typography>
-                    <Typography variant="overline" display="block" gutterBottom className="text-center">
+                    <Typography variant="overline" display="block" gutterBottom>
+                        {data.customer_id}
+                    </Typography>
+                    <Typography variant="overline" display="block" gutterBottom>
                         {`No. Nota : ${today}/${data.no < 10 ? '0' + data.no : data.no}`}
                     </Typography>
                 </Box>
