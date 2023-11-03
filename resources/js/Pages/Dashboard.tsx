@@ -54,11 +54,11 @@ export default function Dashboard({ auth }: PageProps) {
             axios.post(urlRequest, data)
                 .then(res => {
                     toast.success(res.data);
-                    setData({
+                    setData(prevState => ({
                         customer_id: '',
                         cubic: 0,
-                        month: dayjs().format('YYYY-MM-DD'),
-                    })
+                        month: prevState.month,
+                    }))
                 })
                 .catch(e => toast.error('Terjadi Kesalahan'))
         }
