@@ -10,7 +10,7 @@ const PreviewPrintAll = (props: any) => {
         const params = new Proxy(new URLSearchParams(window.location.search), {
             get: (searchParams, prop) => searchParams.get(prop),
         });
-        const urlReq = `${route('print_report_all')}?month=${params.month}`
+        const urlReq = `${route('print_report_all')}?month=${params.month}&month_before=${params.month_before}`
         axios.get(urlReq)
             .then(res => setData(res.data))
             .catch(e => console.log(e))
